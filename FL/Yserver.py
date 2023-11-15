@@ -1,7 +1,7 @@
 import flwr as fl
 
 fl.server.start_server(
-    server_adress="0.0.0.0:8080",
+    server_address="0.0.0.0:8080",
     config=fl.server.ServerConfig(num_rounds=3),
-    strategy=fl.server.strategy.Fedavg(),
+    strategy=fl.server.strategy.FedAvg(),
 )
