@@ -15,7 +15,7 @@ trainloader, testloader = load_data()
 
 class FlowerClient(fl.client.NumPyClient):
     def get_parameters(self, config):
-        return [val.cpu().NumPy() for _, val in net.state.dict().items()]
+        return [val.cpu().numpy() for _, val in net.state_dict().items()]
     
     def fit(self, parameters, config):
         set_parameters(net, parameters)
@@ -27,7 +27,7 @@ class FlowerClient(fl.client.NumPyClient):
         loss, accuracy = test(net, testloader)
         return float(loss), len(testloader.dataset), {"accuracy": accuracy}
     
-fl.client.start.numpy_client(
-    server_adress="127.0.0.1:8080",
+fl.client.start_numpy_client(
+    server_address="127.0.0.1:8080",
     client=FlowerClient(),
 )
