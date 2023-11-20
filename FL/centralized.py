@@ -5,8 +5,10 @@ from torchvision.transforms import Compose, ToTensor, Normalize
 from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10
 
+#runs on the GPU if available otherwise it runs it on the CPU
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+#Model architecture 
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -24,7 +26,8 @@ class Net(nn.Module):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         return self.fc3(x)
-    
+
+#training function; trains the model for a given number of epochs with a given trainset
 def train(net, trainloader, epochs):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
@@ -34,6 +37,7 @@ def train(net, trainloader, epochs):
             criterion(net(images.to(DEVICE)), labels.to(DEVICE)).backward()
             optimizer.step()
 
+#evaluates the function and computes the loss and accuracy on a given testset
 def test(net, testloader):
     criterion = torch.nn.CrossEntropyLoss()
     correct, total, loss = 0, 0, 0.0
@@ -45,12 +49,15 @@ def test(net, testloader):
             correct += (torch.max(outputs.data, 1)[1] == labels).sum().item()
     return loss / len(testloader.dataset), correct / total
 
+#Utility functions
+#Return the dataloaders(trainset and testset)
 def load_data():
     trf = Compose([ToTensor(), Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     trainset = CIFAR10("./data", train=True, download=True, transform=trf)
     testset = CIFAR10("./data", train=False, download=True, transform=trf)
     return DataLoader(trainset, batch_size=32, shuffle=True), DataLoader(testset)
 
+#Return the model
 def load_model():
     return Net().to(DEVICE)
 
