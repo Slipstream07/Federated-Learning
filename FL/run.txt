@@ -1,0 +1,18 @@
+ssh pi1@pi1.local
+ssh pi2@pi2.local
+ssh pi3@pi3.local
+
+cd Federated-Learning/FL
+cd C:\Users\Adam Laurell\OneDrive - Uppsala universitet\Desktop\Federated-Learning\FL
+
+python3 server.py --rounds 3 --min_num_clients 2 --sample_fraction 1.0
+python server.py --rounds 3 --min_num_clients 2 --sample_fraction 1.0
+python server.py --rounds 3 --min_num_clients 2 --sample_fraction 1.0 --server_address=0.0.0.0:8080
+python server.py --rounds 3 --min_num_clients 2 --sample_fraction 1.0 --server_address=192.168.50.135:8080
+
+
+python3 client_pytorch.py --cid=1 --server_address=0.0.0.0:8080
+python client_pytorch.py --cid=1 --server_address=0.0.0.0:8080
+
+python client_pytorch.py --cid=1 --server_address=192.168.50.135:8080
+
