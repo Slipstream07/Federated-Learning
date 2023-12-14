@@ -28,6 +28,6 @@ class FlowerClient(fl.client.NumPyClient):
         return float(loss), len(testloader.dataset), {"accuracy": accuracy}
     
 fl.client.start_numpy_client(
-    server_address="188.149.221.29:8080", #Localt: 127.0.0.1:8080, Jesper: 188.149.221.29:8080
+    server_address="127.0.0.1:8080", #Localt: 127.0.0.1:8080, Jesper: 188.149.221.29:8080
     client=FlowerClient(),
 )
