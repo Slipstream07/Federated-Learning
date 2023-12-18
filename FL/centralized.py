@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import tenseal as ts
 import torch.nn.functional as F
 from torchvision.transforms import Compose, ToTensor, Normalize
 from torch.utils.data import DataLoader
@@ -61,19 +60,3 @@ if __name__ == "__main__":
     train(net, trainloader, 5)
     loss, accuracy = test(net, testloader)
     print(f"Loss: {loss:.5f}, Accuracy: {accuracy:.3f}")
-
-#Received encrypted_parameters from the clients
-context = ts.context(ts.SCHEME_TYPE.CKKS, poly_modulus_degree=4096, coeff_mod_bit_sizes=[60, 40, 40, 60])
-context.load_public_key("keys/public_key")
-context.load_secret_key("keys/secret_key")
-
-# Load encrypted parameters
-encrypted_parameters = ts.ckks_vector(context, encrypted_parameters)
-
-# Decrypt the parameters using the secret key
-decrypted_parameters = context.decrypt(encrypted_parameters, secret_key=True)
-
-# Convert decrypted_parameters to PyTorch tensors
-decrypted_tensors = [torch.tensor(decrypted_params, device=DEVICE) for decrypted_params in decrypted_parameters]
-
-    
