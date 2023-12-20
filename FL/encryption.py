@@ -1,7 +1,7 @@
 import tenseal as ts
-import utils
+from utils import write_data, read_data
 
-params = [1000, 2000, 5000, 10000]
+#params = [1000, 2000, 5000, 10000]
 
 #generate keys
 context = ts.context(
@@ -11,11 +11,26 @@ context = ts.context(
 )
 context.generate_galois_keys()
 context.global_scale = 2**40
+
 secret_context = context.serialize(save_secret_key = True)
-utils.write_data("keys/secret.txt", secret_context)
+write_data("./keys/secret.txt", secret_context)
+
 context.make_context_public()
 public_context = context.serialize()
-utils.write_data("keys/public.txt", public_context)
+write_data("./keys/public.txt", public_context)
+
+#encrypt
+context = ts.context_from(read_data("./keys/secret.txt"))
+salary = [10000]
+salary_encrypted = ts.ckks_vector(context, salary)
+write_data("./outputs/salary_encrypted.txt", salary_encrypted.serialize())
+
+#decryption
+m_proto = read_data("./outputs/salary_encrypted_new_with_plain_calculations.txt")
+m = ts.lazy_ckks_vector_from(m_proto)
+m.link_context(context)
+
+round(m.decrypt()[0], 2)
 
 # def encryption(params):
 #     context = ts.Context()
