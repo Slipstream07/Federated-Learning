@@ -1,36 +1,52 @@
 import tenseal as ts
-from utils import write_data, read_data
-
-#params = [1000, 2000, 5000, 10000]
+import utils
 
 #generate keys
 context = ts.context(
     ts.SCHEME_TYPE.CKKS,
-    poly_modulus_degree=8912,
+    poly_modulus_degree=8192,
     coeff_mod_bit_sizes = [60, 40, 40, 60]
 )
 context.generate_galois_keys()
 context.global_scale = 2**40
 
 secret_context = context.serialize(save_secret_key = True)
-write_data("./keys/secret.txt", secret_context)
+utils.write_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/keys/secret.txt", secret_context)
 
 context.make_context_public()
 public_context = context.serialize()
-write_data("./keys/public.txt", public_context)
+utils.write_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/keys/public.txt", public_context)
 
 #encrypt
-context = ts.context_from(read_data("./keys/secret.txt"))
+context = ts.context_from(utils.read_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/keys/secret.txt"))
 salary = [10000]
 salary_encrypted = ts.ckks_vector(context, salary)
-write_data("./outputs/salary_encrypted.txt", salary_encrypted.serialize())
+utils.write_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/outputs/salary_encrypted.txt", salary_encrypted.serialize())
 
-#decryption
-m_proto = read_data("./outputs/salary_encrypted_new_with_plain_calculations.txt")
+#encrypt increase
+#wage_weight = [1.2]
+#bonus_weight = [600]
+#wage_weight_encrypted = ts.ckks_vector(context, wage_weight)
+#bonus_weight_encrypted = ts.ckks_vector(context, bonus_weight)
+#write_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/outputs/wage_weight_encrypted", wage_weight_encrypted.serialize())
+#write_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/outputs/bonus_weight_encrypted", bonus_weight_encrypted.serialize())
+
+#decryption from encrypted-plain vector
+m_proto = utils.read_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/outputs/salary_encrypted_new_with_plain_calculations.txt")
 m = ts.lazy_ckks_vector_from(m_proto)
 m.link_context(context)
 
-round(m.decrypt()[0], 2)
+#decryption from encrypted-enctypted vector
+# m2_proto = utils.read_data("/Users/jespervestin/Documents/GitHub/Federated-Learning/FL/outputs/salary_encrypted_new_with_encrypted_vectors.txt")
+# m2 = ts.lazy_ckks_vector_from(m2_proto)
+# m2.link_context(context)
+
+printout = round(m.decrypt()[0], 2)
+print(printout)
+
+
+
+
 
 # def encryption(params):
 #     context = ts.Context()
