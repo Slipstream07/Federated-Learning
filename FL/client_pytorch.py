@@ -5,7 +5,7 @@ from collections import OrderedDict
 import flwr as fl
 import torch
 import torch.nn as nn
-import tenseal as ts
+# import tenseal as ts
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import CIFAR10, MNIST
